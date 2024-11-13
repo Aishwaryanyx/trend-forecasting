@@ -1,0 +1,44 @@
+import google.generativeai as genai
+
+
+genai.configure(api_key="AIzaSyCoYzJU2VHpaOgBq0CoElAuy_MyRJIhVhw")
+
+
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+
+system_prompt = "You are a fashion trend forecaster.You are supposed to predict the future fashion trends by analysing the past and current data of the fashion trends."
+
+
+# Define the function to interact with the bot
+def chat_with_bot(fashion_type, user_input):
+    # Adjust the prompt based on the type of fashion the user asks for
+    prompt = system_prompt + f"\nFashion type: {fashion_type}\nUser: {user_input}\n:"
+    
+    # Using the correct method to generate a response from the model
+    response = model.generate_content(prompt)
+    
+    # Limit the response to 10 lines maximum by splitting and trimming
+    lines = response.text.split('\n')
+    response_text = '\n'.join(lines[:10])  # Keep the first 10 lines
+    
+    return response_text
+
+# Main loop to chat with the bot
+if __name__ == "__main__":
+    while True:
+        # Ask user for the type of fashion they want to predict
+        fashion_type = input("What type of fashion do you want to predict? (e.g., Western, Eastern, Streetwear, etc.): ")
+
+        # Ask for the user query
+        user_input = input("You: ")
+
+        if user_input.lower() == "bye":
+            print("forecaster: Goodbye")
+            break
+
+        # Get the response from the model based on the fashion type and user input
+        response = chat_with_bot(fashion_type, user_input)
+        
+        # Print the model's response, keeping it concise (max 10 lines)
+        print(f"forecaster: {response}")
